@@ -5,6 +5,11 @@ import "./index.css"
 
 
 export default function App() {
+
+  useEffect(()=>{
+    document.title = "Quiz"
+  },[])
+
   return(
     <div className="container">
       <Form />

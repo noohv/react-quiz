@@ -8,7 +8,7 @@ export default function Form() {
     const [answerData, setAnswerData] = useState([])
 
     useEffect(() => {
-      fetch("https://opentdb.com/api.php?amount=3&type=multiple")
+      fetch("https://opentdb.com/api.php?amount=10&type=multiple")
       .then(response => response.json())
       .then(result => setData(result.results))
     }, [])

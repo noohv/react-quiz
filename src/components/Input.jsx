@@ -7,11 +7,11 @@ export default function Input(props) {
     props.answerData ? obj = props.answerData.find(o => o.question === props.question) : obj = false
 
     const inputs = props.answers.map(ans => {
-
+        let isChecked = obj ? (obj.answer===ans) : false
 
         return (
             <div className="input-field-container" key={nanoid()}>
-                <label className="input-label" htmlFor={ans}>{ans}</label>
+                <label className={isChecked ? "input-label checked" : "input-label"} htmlFor={ans}>{ans}</label>
                 <input
                     className="input-field"
                     type="radio"
@@ -19,17 +19,20 @@ export default function Input(props) {
                     name={props.question}
                     value={ans}
                     onChange={props.handleChange}
-                    checked={obj ? (obj.answer===ans) : false}
+                    checked={isChecked}
                 />
             </div>
         )
     })
 
     return(
-        <div className="input-container">
+        <div>
             <h3 className="input-question">{props.question}</h3>
-            {inputs}
+            <div className="input-container">
+                {inputs}
+            </div>
         </div>
+
 
     )
 }
