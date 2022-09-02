@@ -6,14 +6,38 @@ import Input from "./Input"
 export default function Form() {
     const [data, setData] = useState([])
     const [answerData, setAnswerData] = useState([])
+    const [isAnswered, setIsAnswered] = useState(false)
+    const [reset, setReset] = useState(false)
+
+    const fetchData = () => {
+        fetch("https://opentdb.com/api.php?amount=3&type=multiple")
+        .then(response => response.json())
+        .then(result => setData(result.results))
+    }
 
     useEffect(() => {
-      fetch("https://opentdb.com/api.php?amount=10&type=multiple")
-      .then(response => response.json())
-      .then(result => setData(result.results))
-    }, [])
+        fetchData()
+        setAnswerData([])
+        setIsAnswered(false)
+    }, [reset])
 
-    function handleChange(e) {
+    const getCorrect = (key,arr) => {
+        for(let i of arr) {
+            if(i.question === key){
+                return i.correct_answer
+            }
+        }
+    }
+
+    const checkAnswers = () => {
+        let arr = []
+        for(let ansObj of answerData) {
+            arr.push(getCorrect(ansObj.question,data))
+        }
+        return arr
+    }
+
+    const handleChange = (e) => {
         const {name, value} = e.target
 
         const addAnswer = (obj) => {
@@ -39,9 +63,24 @@ export default function Form() {
 
     }
 
-    function handleSubmit(e) {
+    const score = () => {
+        const arr = checkAnswers()
+        for(let i=0;i<arr.length;i++) {
+            if(arr[i] === answerData[i].answer) {
+                console.log("nice")
+            }
+            else {
+                console.log("trash")
+            }
+        }
+    }
+
+    const handleSubmit = (e) => {
         e.preventDefault()
-        setAnswerData([])
+        setIsAnswered(old => !old)
+        if(isAnswered) {
+            setReset(old => !old)
+        }
     }
     
     const inputs = data.map(obj => {
@@ -50,18 +89,25 @@ export default function Form() {
         let nId = nanoid()
 
         return <Input 
-            key={nId}
+            key={obj.question}
             question={obj.question}
             answers={ans}
             handleChange={handleChange}
             answerData={answerData}
+            checkAnswers={checkAnswers}
+            isAnswered={isAnswered}
+            reset={reset}
         />
     })
 
     return(
-        <form className="form" onSubmit={handleSubmit}>
-            {inputs}
-            <button className="button-show">Show result</button>
-        </form>
+        <div>
+            <form className="form" onSubmit={handleSubmit}>
+                {inputs}
+
+                {!isAnswered && <button className="button-show">Show result</button>} 
+                {isAnswered && <button className="button-show">Reset</button>}
+            </form>
+        </div>
     )
 }
