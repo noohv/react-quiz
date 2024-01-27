@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid"
+import { decode } from "html-entities"
 import React, {useState, useEffect} from "react"
 import Input from "./Input"
 
@@ -89,8 +90,8 @@ export default function Form() {
         let nId = nanoid()
 
         return <Input 
-            key={obj.question}
-            question={obj.question}
+            key={decode(obj.question)}
+            question={decode(obj.question)}
             answers={ans}
             handleChange={handleChange}
             answerData={answerData}
